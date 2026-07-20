@@ -1,0 +1,24 @@
+<div class="container mt-5">
+
+<h2>Login</h2>
+
+<input
+class="form-control mb-3"
+[(ngModel)]="user.username"
+placeholder="Username">
+
+<input
+class="form-control mb-3"
+type="password"
+[(ngModel)]="user.password"
+placeholder="Password">
+
+<button
+class="btn btn-success"
+(click)="login()">
+
+Login
+
+</button>
+
+</div>
