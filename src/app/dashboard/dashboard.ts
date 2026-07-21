@@ -16,6 +16,9 @@ export class DashboardComponent implements OnInit {
   tasks = signal<TaskItem[]>([]);
   editingId = signal<number | null>(null);
 
+  // Form Visibility Control
+  showForm = signal<boolean>(false);
+
   // Interaction & IxD States
   isLoadingTasks = signal<boolean>(false);
   isSaving = signal<boolean>(false);
@@ -23,11 +26,10 @@ export class DashboardComponent implements OnInit {
   
   feedbackMessage = signal<{ text: string; type: 'success' | 'danger' } | null>(null);
 
-  // Sorting / Reordering Controls
+  // Sorting Controls
   sortBy = signal<'title' | 'status' | 'id'>('id');
   sortDirection = signal<'asc' | 'desc'>('desc');
 
-  // Computed Signal for Reordered Tasks
   sortedTasks = computed(() => {
     const list = [...this.tasks()];
     const field = this.sortBy();
@@ -63,11 +65,16 @@ export class DashboardComponent implements OnInit {
         this.tasks.set(data);
         this.isLoadingTasks.set(false);
       },
-      error: (err) => {
+      error: () => {
         this.showFeedback('Failed to load tickets. Please check backend API.', 'danger');
         this.isLoadingTasks.set(false);
       }
     });
+  }
+
+  openCreateForm(): void {
+    this.resetForm();
+    this.showForm.set(true);
   }
 
   saveTask(): void {
@@ -80,7 +87,6 @@ export class DashboardComponent implements OnInit {
     const id = this.editingId();
 
     if (id) {
-      // UPDATE ACTION
       this.taskService.updateTask(id, this.taskDto).subscribe({
         next: () => {
           this.isSaving.set(false);
@@ -94,7 +100,6 @@ export class DashboardComponent implements OnInit {
         }
       });
     } else {
-      // CREATE ACTION
       this.taskService.createTask(this.taskDto).subscribe({
         next: () => {
           this.isSaving.set(false);
@@ -118,6 +123,7 @@ export class DashboardComponent implements OnInit {
       description: task.description,
       status: task.status
     };
+    this.showForm.set(true); // Reveal form for editing
     this.showFeedback(`Editing "${task.title}"`, 'success');
   }
 
@@ -141,7 +147,6 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  // Reordering controls handler
   setSort(field: 'title' | 'status' | 'id'): void {
     if (this.sortBy() === field) {
       this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
@@ -153,6 +158,7 @@ export class DashboardComponent implements OnInit {
 
   resetForm(): void {
     this.editingId.set(null);
+    this.showForm.set(false); // Hide form
     this.taskDto = { title: '', description: '', status: 'Open' };
   }
 

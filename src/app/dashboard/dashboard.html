@@ -1,10 +1,26 @@
 <div class="container my-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Ticket Dashboard</h2>
-    <button class="btn btn-outline-secondary btn-sm" (click)="loadTasks()" [disabled]="isLoadingTasks()">
-      <span *ngIf="isLoadingTasks()" class="spinner-border spinner-border-sm me-1"></span>
-      {{ isLoadingTasks() ? 'Refreshing...' : 'Refresh List' }}
-    </button>
+    
+    <div>
+      <!-- Create Ticket Action Button -->
+      <button 
+        *ngIf="!showForm()" 
+        class="btn btn-primary btn-sm me-2" 
+        (click)="openCreateForm()"
+      >
+        + Create Ticket
+      </button>
+
+      <button 
+        class="btn btn-outline-secondary btn-sm" 
+        (click)="loadTasks()" 
+        [disabled]="isLoadingTasks()"
+      >
+        <span *ngIf="isLoadingTasks()" class="spinner-border spinner-border-sm me-1"></span>
+        {{ isLoadingTasks() ? 'Refreshing...' : 'Refresh List' }}
+      </button>
+    </div>
   </div>
 
   <!-- Toast/Feedback Banner -->
@@ -18,11 +34,21 @@
     {{ feedbackMessage()?.text }}
   </div>
 
-  <!-- Create / Edit Form Card -->
-  <div class="card p-3 my-3 shadow-sm">
-    <h4 class="card-title">
-      {{ editingId() ? 'Edit Ticket' : 'Create New Ticket' }}
-    </h4>
+  <!-- Conditional Create / Edit Form Card -->
+  <div *ngIf="showForm()" class="card p-3 my-3 shadow-sm border-primary">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h4 class="card-title mb-0">
+        {{ editingId() ? 'Edit Ticket' : 'Create New Ticket' }}
+      </h4>
+      <button 
+        type="button" 
+        class="btn-close" 
+        aria-label="Close" 
+        (click)="resetForm()"
+        [disabled]="isSaving()"
+      ></button>
+    </div>
+
     <form (ngSubmit)="saveTask()">
       <div class="mb-2">
         <label class="form-label font-weight-bold">Title</label>
@@ -63,7 +89,6 @@
       </div>
 
       <div class="d-flex align-items-center">
-        <!-- Dynamic Submit Button with Feedback -->
         <button type="submit" class="btn btn-primary me-2" [disabled]="isSaving()">
           <span *ngIf="isSaving()" class="spinner-border spinner-border-sm me-1" role="status"></span>
           <span>
@@ -74,7 +99,6 @@
         <button 
           type="button" 
           class="btn btn-secondary" 
-          *ngIf="editingId()" 
           (click)="resetForm()"
           [disabled]="isSaving()"
         >
@@ -84,7 +108,7 @@
     </form>
   </div>
 
-  <!-- Interactive Content Reordering Toolbar -->
+  <!-- Content Reordering Toolbar -->
   <div class="d-flex justify-content-between align-items-center my-3 p-2 bg-light rounded border">
     <span class="text-muted small">Reorder Tickets By:</span>
     <div class="btn-group btn-group-sm">
@@ -117,13 +141,13 @@
     </div>
   </div>
 
-  <!-- Loading Overlay for List -->
+  <!-- Loading State -->
   <div *ngIf="isLoadingTasks()" class="text-center my-4 py-4">
     <div class="spinner-border text-primary" role="status"></div>
     <p class="mt-2 text-muted">Fetching dashboard tickets...</p>
   </div>
 
-  <!-- Ticket List with Actions Feedback -->
+  <!-- Ticket List -->
   <ul *ngIf="!isLoadingTasks()" class="list-group shadow-sm">
     <li 
       *ngFor="let task of sortedTasks()" 
@@ -166,7 +190,7 @@
     </li>
 
     <li *ngIf="sortedTasks().length === 0" class="list-group-item text-center text-muted py-4">
-      No tickets found. Add your first ticket above!
+      No tickets found. Click "+ Create Ticket" above to add one!
     </li>
   </ul>
 </div>
