@@ -1,52 +1,52 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector:'app-login',
-   imports: [FormsModule], 
-  templateUrl:'./login.html'
+  selector: 'app-login',
+  imports: [CommonModule, FormsModule, RouterLink],
+  templateUrl: './login.html'
 })
-export class LoginComponent{
+export class Login {
 
-user={
+  user = {
+    username: '',
+    password: ''
+  };
 
-username:'',
-password:''
+  loading = false;
+  errorMessage = '';
+  showPassword = false;
+  rememberMe = false;
 
-};
+  constructor(
+    private auth: AuthService,
+    private router: Router
+  ) {}
 
-constructor(
+  login() {
+    if (!this.user.username || !this.user.password) {
+      return;
+    }
 
-private auth:AuthService,
-private router:Router
+    this.loading = true;
+    this.errorMessage = '';
 
-){}
-
-login(){
-
-this.auth.login(this.user)
-
-.subscribe({
-
-next:(res)=>{
-
-this.auth.saveToken(res.token);
-
-this.router.navigate(['/dashboard']);
-
-},
-
-error:()=>{
-
-alert("Invalid Login");
-
+    this.auth.login(this.user)
+      .subscribe({
+        next: (res) => {
+          this.loading = false;
+          this.auth.saveToken(res.token);
+          this.router.navigate(['/dashboard']);
+        },
+        error: (err) => {
+          this.loading = false;
+          this.errorMessage = err.status === 401
+            ? 'Incorrect username or password.'
+            : 'Something went wrong. Please try again.';
+        }
+      });
+  }
 }
-
-});
-
-}
-
-}
-export class Login {}

@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TaskEdit } from './task-edit';
+import { Navbar } from './navbar';
 
-describe('TaskEdit', () => {
-  let component: TaskEdit;
-  let fixture: ComponentFixture<TaskEdit>;
+describe('Navbar', () => {
+  let component: Navbar;
+  let fixture: ComponentFixture<Navbar>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TaskEdit],
+      imports: [Navbar],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TaskEdit);
+    fixture = TestBed.createComponent(Navbar);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

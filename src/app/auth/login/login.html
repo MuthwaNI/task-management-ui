@@ -1,24 +1,87 @@
-<div class="container mt-5">
+<div class="login-wrapper d-flex align-items-center justify-content-center">
+  <div class="login-card">
 
-<h2>Login</h2>
+    <div class="text-center mb-4">
+      <h2 class="fw-bold mb-1">Welcome back</h2>
+      <p class="text-muted small">Sign in to Task Management System</p>
+    </div>
 
-<input
-class="form-control mb-3"
-[(ngModel)]="user.username"
-placeholder="Username">
+    <form (ngSubmit)="login()" #loginForm="ngForm" novalidate>
 
-<input
-class="form-control mb-3"
-type="password"
-[(ngModel)]="user.password"
-placeholder="Password">
+      <!-- Username -->
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input
+          id="username"
+          name="username"
+          class="form-control"
+          [class.is-invalid]="loginForm.submitted && username.invalid"
+          [(ngModel)]="user.username"
+          #username="ngModel"
+          required
+          autocomplete="username"
+          [disabled]="loading"
+          placeholder="Enter your username"
+          autofocus>
+        <div class="invalid-feedback">
+          Username is required.
+        </div>
+      </div>
 
-<button
-class="btn btn-success"
-(click)="login()">
+      <!-- Password -->
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <div class="input-group">
+          <input
+            id="password"
+            name="password"
+            [type]="showPassword ? 'text' : 'password'"
+            class="form-control"
+            [class.is-invalid]="loginForm.submitted && password.invalid"
+            [(ngModel)]="user.password"
+            #password="ngModel"
+            required
+            autocomplete="current-password"
+            [disabled]="loading"
+            placeholder="Enter your password">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="showPassword = !showPassword"
+            tabindex="-1"
+            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+            <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
+          </button>
+          <div class="invalid-feedback">
+            Password is required.
+          </div>
+        </div>
+      </div>
 
-Login
+      <!-- Remember + forgot -->
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="remember" [(ngModel)]="rememberMe" name="remember" [disabled]="loading">
+          <label class="form-check-label small" for="remember">Remember me</label>
+        </div>
+        <a routerLink="/forgot-password" class="small">Forgot password?</a>
+      </div>
 
-</button>
+      <!-- Server-side / auth error -->
+      <div class="alert alert-danger py-2 small" *ngIf="errorMessage" role="alert">
+        {{ errorMessage }}
+      </div>
 
+      <!-- Submit -->
+      <button
+        type="submit"
+        class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2"
+        [disabled]="loading">
+        <span class="spinner-border spinner-border-sm" *ngIf="loading" role="status" aria-hidden="true"></span>
+        {{ loading ? 'Signing in...' : 'Login' }}
+      </button>
+
+    </form>
+
+  </div>
 </div>
