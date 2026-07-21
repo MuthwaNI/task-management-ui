@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login';
 import { RegisterComponent } from './auth/register/register';
-import { Dashboard } from './dashboard/dashboard';
+import { DashboardComponent } from './dashboard/dashboard';
 
 
 export const routes: Routes = [
@@ -27,7 +27,7 @@ export const routes: Routes = [
 
 {
  path:'dashboard',
- component:Dashboard
+ component:DashboardComponent
 }
 
 ];
