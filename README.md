@@ -1,4 +1,6 @@
 # TaskManagementUi
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/991c226b-dc01-43d3-8725-47d68bda7979" />
+
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.7.
 
