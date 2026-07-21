@@ -1,5 +1,9 @@
 # TaskManagementUi
-<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/991c226b-dc01-43d3-8725-47d68bda7979" />
+<img width="1362" height="688" alt="image" src="https://github.com/user-attachments/assets/07b32557-f4e2-4ee3-8da3-6f2b6f7d5ed0" />
+<img width="1364" height="695" alt="image" src="https://github.com/user-attachments/assets/59913461-0afc-4fa6-bc9f-5de2263004d3" />
+<img width="1358" height="694" alt="image" src="https://github.com/user-attachments/assets/35839622-20eb-430d-bac4-9773722c4b00" />
+<img width="1366" height="648" alt="image" src="https://github.com/user-attachments/assets/180ec426-5a07-4c0d-8ae4-a695413d0c3d" />
+
 
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.7.
