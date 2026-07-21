@@ -1,1 +1,172 @@
-<p>dashboard works!</p>
+<div class="container my-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Ticket Dashboard</h2>
+    <button class="btn btn-outline-secondary btn-sm" (click)="loadTasks()" [disabled]="isLoadingTasks()">
+      <span *ngIf="isLoadingTasks()" class="spinner-border spinner-border-sm me-1"></span>
+      {{ isLoadingTasks() ? 'Refreshing...' : 'Refresh List' }}
+    </button>
+  </div>
+
+  <!-- Toast/Feedback Banner -->
+  <div 
+    *ngIf="feedbackMessage()" 
+    class="alert alert-dismissible fade show" 
+    [class.alert-success]="feedbackMessage()?.type === 'success'"
+    [class.alert-danger]="feedbackMessage()?.type === 'danger'"
+    role="alert"
+  >
+    {{ feedbackMessage()?.text }}
+  </div>
+
+  <!-- Create / Edit Form Card -->
+  <div class="card p-3 my-3 shadow-sm">
+    <h4 class="card-title">
+      {{ editingId() ? 'Edit Ticket' : 'Create New Ticket' }}
+    </h4>
+    <form (ngSubmit)="saveTask()">
+      <div class="mb-2">
+        <label class="form-label font-weight-bold">Title</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          [(ngModel)]="taskDto.title" 
+          name="title" 
+          placeholder="e.g., Fix Navigation Bug"
+          [disabled]="isSaving()"
+          required 
+        />
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label">Description</label>
+        <textarea 
+          class="form-control" 
+          [(ngModel)]="taskDto.description" 
+          name="description"
+          placeholder="Provide ticket context..."
+          [disabled]="isSaving()"
+        ></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Status</label>
+        <select 
+          class="form-select" 
+          [(ngModel)]="taskDto.status" 
+          name="status"
+          [disabled]="isSaving()"
+        >
+          <option value="Open">Open</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Closed">Closed</option>
+        </select>
+      </div>
+
+      <div class="d-flex align-items-center">
+        <!-- Dynamic Submit Button with Feedback -->
+        <button type="submit" class="btn btn-primary me-2" [disabled]="isSaving()">
+          <span *ngIf="isSaving()" class="spinner-border spinner-border-sm me-1" role="status"></span>
+          <span>
+            {{ isSaving() ? (editingId() ? 'Updating ticket...' : 'Creating ticket...') : (editingId() ? 'Update Ticket' : 'Create Ticket') }}
+          </span>
+        </button>
+
+        <button 
+          type="button" 
+          class="btn btn-secondary" 
+          *ngIf="editingId()" 
+          (click)="resetForm()"
+          [disabled]="isSaving()"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Interactive Content Reordering Toolbar -->
+  <div class="d-flex justify-content-between align-items-center my-3 p-2 bg-light rounded border">
+    <span class="text-muted small">Reorder Tickets By:</span>
+    <div class="btn-group btn-group-sm">
+      <button 
+        class="btn" 
+        [class.btn-primary]="sortBy() === 'id'" 
+        [class.btn-outline-primary]="sortBy() !== 'id'"
+        (click)="setSort('id')"
+      >
+        Date {{ sortBy() === 'id' ? (sortDirection() === 'asc' ? '↑' : '↓') : '' }}
+      </button>
+
+      <button 
+        class="btn" 
+        [class.btn-primary]="sortBy() === 'title'" 
+        [class.btn-outline-primary]="sortBy() !== 'title'"
+        (click)="setSort('title')"
+      >
+        Title {{ sortBy() === 'title' ? (sortDirection() === 'asc' ? 'A-Z' : 'Z-A') : '' }}
+      </button>
+
+      <button 
+        class="btn" 
+        [class.btn-primary]="sortBy() === 'status'" 
+        [class.btn-outline-primary]="sortBy() !== 'status'"
+        (click)="setSort('status')"
+      >
+        Status {{ sortBy() === 'status' ? (sortDirection() === 'asc' ? '↑' : '↓') : '' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading Overlay for List -->
+  <div *ngIf="isLoadingTasks()" class="text-center my-4 py-4">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-2 text-muted">Fetching dashboard tickets...</p>
+  </div>
+
+  <!-- Ticket List with Actions Feedback -->
+  <ul *ngIf="!isLoadingTasks()" class="list-group shadow-sm">
+    <li 
+      *ngFor="let task of sortedTasks()" 
+      class="list-group-item d-flex justify-content-between align-items-center"
+    >
+      <div>
+        <strong>{{ task.title }}</strong>
+        <p class="mb-0 text-muted small">{{ task.description || 'No description provided.' }}</p>
+        <span 
+          class="badge mt-1" 
+          [class.bg-warning]="task.status === 'Open'"
+          [class.bg-info]="task.status === 'In Progress'"
+          [class.bg-success]="task.status === 'Closed'"
+        >
+          {{ task.status }}
+        </span>
+      </div>
+
+      <div class="d-flex align-items-center">
+        <button 
+          class="btn btn-sm btn-outline-warning me-2" 
+          (click)="startEdit(task)"
+          [disabled]="deletingTaskId() === task.id || isSaving()"
+        >
+          Edit
+        </button>
+
+        <button 
+          class="btn btn-sm btn-outline-danger d-flex align-items-center" 
+          (click)="deleteTask(task.id)"
+          [disabled]="deletingTaskId() === task.id"
+        >
+          <span 
+            *ngIf="deletingTaskId() === task.id" 
+            class="spinner-border spinner-border-sm me-1"
+          ></span>
+          {{ deletingTaskId() === task.id ? 'Deleting...' : 'Delete' }}
+        </button>
+      </div>
+    </li>
+
+    <li *ngIf="sortedTasks().length === 0" class="list-group-item text-center text-muted py-4">
+      No tickets found. Add your first ticket above!
+    </li>
+  </ul>
+</div>
