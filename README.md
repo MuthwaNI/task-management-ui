@@ -1,7 +1,7 @@
 # TaskManagementUi
 <img width="1362" height="688" alt="image" src="https://github.com/user-attachments/assets/07b32557-f4e2-4ee3-8da3-6f2b6f7d5ed0" />
 <img width="1364" height="695" alt="image" src="https://github.com/user-attachments/assets/59913461-0afc-4fa6-bc9f-5de2263004d3" />
-<img width="1358" height="694" alt="image" src="https://github.com/user-attachments/assets/35839622-20eb-430d-bac4-9773722c4b00" />
+<img width="1353" height="694" alt="image" src="https://github.com/user-attachments/assets/54a0fb97-511a-4442-bb7e-855bf7f2617e" />
 <img width="1366" height="648" alt="image" src="https://github.com/user-attachments/assets/180ec426-5a07-4c0d-8ae4-a695413d0c3d" />
 
 
